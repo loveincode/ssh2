@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"
+    xsi:schemaLocation="    
+            http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd  
+            http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd  
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
+            http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.2.xsd  
+            http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd">
+
+    <!-- spring注解解析器 -->
+    <context:component-scan base-package="com.loveincode"></context:component-scan>
+    
+    <!-- 引入外部属性文件 -->
+    <context:property-placeholder location="classpath:jdbc.properties" />
+    <!-- 添加sessionFactory bane ，注意，该类是Spring提供的 -->
+    <bean id="sessionFactory"
+        class="org.springframework.orm.hibernate5.LocalSessionFactoryBean" scope="prototype">
+        <!-- 注入连接池，包含了数据库用户名，密码等等信息 -->
+        <property name="dataSource" ref="myDataSource" />
+		 <!-- 扫描实体类包，解析实体类的注解 -->
+        <property name="packagesToScan">
+            <list>
+                <!-- value值填写实体类所在的包 -->
+                <value>com.loveincode.bean</value>
+            </list>
+        </property>
+        <!-- 配置Hibernate的其他的属性 -->
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+                <prop key="hibernate.show_sql">false</prop>
+                <prop key="hibernate.format_sql">true</prop>
+                <prop key="hibernate.connection.autocommit">false</prop>
+                <!-- 自动生成表，create的话每次启动会删掉表，重新生成 -->
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
+            </props>
+        </property>
+    </bean>
+    
+    <!-- 添加c3p0数据库连接池 bean -->
+    <bean id="myDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <!-- 数据库连接配置 -->
+        <property name="driverClass" value="${jdbc.driver}" />
+        <property name="jdbcUrl" value="${jdbc.url}" />
+        <property name="user" value="${jdbc.user}" />
+        <property name="password" value="${jdbc.password}" />
+        <!-- 每300秒检查所有连接池中的空闲连接 -->
+        <property name="idleConnectionTestPeriod" value="300"></property>
+        <!-- 最大空闲时间,900秒内未使用则连接被丢弃。若为0则永不丢弃 -->
+        <property name="maxIdleTime" value="900"></property>
+        <!-- 最大连接数 -->
+        <property name="maxPoolSize" value="2"></property>
+    </bean>
+</beans>
