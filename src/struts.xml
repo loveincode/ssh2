@@ -5,6 +5,18 @@
 <!-- 上面的头，注意版本，从样例里复制过来 showcase.war\WEB-INF\src\java\struts.xml -->
     
 <struts>
+	
+	<!-- **********    restful 测试      ***************** -->
+	<constant name="struts.i18n.encoding" value="UTF-8" />
+	<!-- 指定jsp文件所在的目录地址 -->
+    <constant name="struts.convention.result.path" value="/WEB-INF/jsp/" />
+    <!--  指定控制器类的后缀为 Controller -->
+    <constant name="struts.convention.action.suffix" value="Controller"/>
+    <constant name="struts.convention.action.mapAllMatches" value="true"/>
+    <!-- 指定 Action 所在包继承的父包 -->
+    <constant name="struts.convention.default.parent.package" value="rest-default"/>
+    <!-- **********    restful 测试      ***************** -->
+    
      <!-- 告知Struts2运行时使用Spring来创建对象 -->
     <constant name="struts.objectFactory" value="spring"></constant>
     <!-- 第1步：先定义一个包 -->
@@ -24,5 +36,7 @@
             <!-- result接收返回的字符串，然后做对应的事情 -->
             <result name="success">/WEB-INF/jsp/helloworld.jsp</result>
         </action>
+        
+        
     </package>
 </struts>
